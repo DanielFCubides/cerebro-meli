@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.6'
 services:
   mysqldb:
     image: mysql:5.7
@@ -17,3 +17,5 @@ services:
       DB_HOST: mysqldb
       DB_PORT: 3306
       DB_NAME: api
+    ports:
+      - 80:8080
