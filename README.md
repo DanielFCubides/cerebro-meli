@@ -1,3 +1,4 @@
+[![codecov](https://codecov.io/gh/DanielFCubides/cerebro-meli/branch/main/graph/badge.svg?token=5DLN0WAQCL)](https://codecov.io/gh/DanielFCubides/cerebro-meli)
 # Cerebro
 
 This projects helps magneto to find mutants to defeat the X-MEN. 
