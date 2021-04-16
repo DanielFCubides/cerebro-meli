@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  mysqldb:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: r00t
+      MYSQL_DATABASE: api
+      MYSQL_USER: us3r
+      MYSQL_PASSWORD: p455
+  app:
+    build: ./
+    environment:
+      SERVER_PORT: 8080
+      DB_USER_NAME: us3r
+      DB_USER_PASSWORD: p455
+      DB_HOST: mysqldb
+      DB_PORT: 3306
+      DB_NAME: api
