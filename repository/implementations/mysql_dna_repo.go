@@ -32,21 +32,19 @@ func (repo *MysqlDNARepo) Save(dna []string, isMutant bool) error {
 }
 
 func (repo *MysqlDNARepo) GetStats() (mutants int, humans int, ratio float64) {
-	m := 0
-	err := repo.db.Model(&repository.DNA{}).Where("is_mutant = ?", true).Count(&m).Error
+	err := repo.db.Model(&repository.DNA{}).Where("is_mutant = ?", true).Count(&mutants).Error
 	if err != nil {
 		log.Printf(err.Error())
 	}
-	h := 0
-	err = repo.db.Model(&repository.DNA{}).Where("is_mutant = ? ", false).Count(&h).Error
+	err = repo.db.Model(&repository.DNA{}).Where("is_mutant = ? ", false).Count(&humans).Error
 	if err != nil {
 		log.Printf(err.Error())
 	}
-	if h != 0 {
-		ratio = float64(m) / float64(h)
+	if humans != 0 {
+		return mutants, humans, float64(mutants) / float64(humans)
 	}
 
-	return m, h, ratio
+	return mutants, humans, 1.0
 
 }
 

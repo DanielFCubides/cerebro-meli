@@ -59,14 +59,50 @@ func (s *MysqlDNARepoSuite) TestGetStatsWhenNoHumans() {
 		WithQuery("SELECT count(*) FROM \"dnas\"  WHERE (is_mutant = false )").
 		WithReply([]map[string]interface{}{
 			{
-				"COUNT(*)": 100,
+				"COUNT(*)": 0,
 			},
 		})
 
 	mutants, humans, ratio := s.repo.GetStats()
 	s.Equal(40, mutants)
+	s.Equal(0, humans)
+	s.Equal(1.0, ratio)
+}
+
+func (s *MysqlDNARepoSuite) TestGetStatsWhenGettingHumansCountFail() {
+	mocket.Catcher.Reset().NewMock().
+		WithQuery("SELECT count(*) FROM \"dnas\"  WHERE (is_mutant = true)").
+		WithError(errors.New("mock error"))
+	mocket.Catcher.NewMock().
+		WithQuery("SELECT count(*) FROM \"dnas\"  WHERE (is_mutant = false )").
+		WithReply([]map[string]interface{}{
+			{
+				"COUNT(*)": 100,
+			},
+		})
+
+	mutants, humans, ratio := s.repo.GetStats()
+	s.Equal(0, mutants)
 	s.Equal(100, humans)
-	s.Equal(0.4, ratio)
+	s.Equal(0.0, ratio)
+}
+
+func (s *MysqlDNARepoSuite) TestGetStatsWhenGettingMutantsCountFail() {
+	mocket.Catcher.Reset().NewMock().
+		WithQuery("SELECT count(*) FROM \"dnas\"  WHERE (is_mutant = true)").
+		WithReply([]map[string]interface{}{
+			{
+				"COUNT(*)": 40,
+			},
+		})
+	mocket.Catcher.NewMock().
+		WithQuery("SELECT count(*) FROM \"dnas\"  WHERE (is_mutant = false )").
+		WithError(errors.New("mock error"))
+
+	mutants, humans, ratio := s.repo.GetStats()
+	s.Equal(40, mutants)
+	s.Equal(0, humans)
+	s.Equal(1.0, ratio)
 }
 
 func (s *MysqlDNARepoSuite) TestSaveSucessfull() {
