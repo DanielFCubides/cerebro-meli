@@ -23,6 +23,7 @@ type MutantVerifierImpl struct {
 }
 
 func NewMutantVerifierImpl(r repository.DNARepo) usecase.MutantVerifier {
+	//make a dict with the target genes to make easier the comparison
 	return &MutantVerifierImpl{sequenceMap: map[string]string{
 		"A": "AAA",
 		"T": "TTT",
@@ -34,16 +35,18 @@ func NewMutantVerifierImpl(r repository.DNARepo) usecase.MutantVerifier {
 
 func (m *MutantVerifierImpl) IsMutant(dna []string) bool {
 	mutantGens := 0
-	valid := verifyDNA(dna)
-	if !valid {
+	if !verifyDNA(dna) {
 		return false
 	}
 	for i, DNAseq := range dna {
 		for j, nucleobase := range DNAseq {
+			//for every cell in the DNA matrix
 			nucleotide := string(nucleobase)
+			// check if is a valid the person is human (nucleotides in [A, T, G, C])
 			if !m.isValidNucleotide(nucleotide) {
 				return false
 			}
+			// explore the adjacents cell and to look for genes
 			mutantGens += m.exploreNeighborhoods(i, j, nucleotide, dna)
 			if mutantGens > 1 {
 				_ = m.repo.Save(dna, true)
@@ -63,11 +66,13 @@ func (m *MutantVerifierImpl) isValidNucleotide(nucleotide string) bool {
 }
 
 func verifyDNA(dna []string) bool {
+	//id the DNA matrix is small the 4x4 it could not be a mutant
 	length := len(dna)
 	if length < 4 {
 		return false
 	}
 	for _, dnaSeq := range dna {
+		//if is not NxN matrix, this person could have strange deformation but is not a mutant we could work with
 		if len(dnaSeq) != length {
 			return false
 		}
@@ -78,6 +83,7 @@ func verifyDNA(dna []string) bool {
 func (m *MutantVerifierImpl) exploreNeighborhoods(i int, j int, nucleobase string, dna []string) int {
 	mutantGenes := 0
 	for _, neighbour := range m.getNeighborhoods(i, j, dna) {
+		//check if one of the adjacent cells complete a gene
 		if neighbour == m.sequenceMap[nucleobase] {
 			mutantGenes += 1
 		}
