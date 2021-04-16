@@ -31,10 +31,17 @@ Then run the mysql database
 ```shell
 docker-compose up -d mysqldb
 ```
-Then run the application (the application will run in the port 80 by default if you need to setup other port change the docker-compose.yaml file):
+ Then run the application (the application will run in the port 80 by default if you need to set up other port change the docker-compose.yaml file):
 ```shell
 docker-compose up -d app 
 ```
+> Take in account that `app` needs that `mysqldb` is accepting connections, if the startup of the mysqldb is fast enough you could use:
+:
+```shell
+docker-compose up -d
+```
+> This issue should be mitigated with the use of `depends-on` but it was deprecated for [docker-compose 3](https://docs.docker.com/compose/compose-file/compose-file-v3/#depends_on)
+
 
 You will have the following endpoints:
 ```http request
