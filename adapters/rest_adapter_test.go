@@ -2,6 +2,7 @@ package adapters
 
 import (
 	"bytes"
+	"cerebro/domain"
 	"cerebro/usecase/mocks"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
@@ -32,9 +33,16 @@ func (r *RestAdapterSuite) TestRestAdapter_GetStats() {
 	recoder := httptest.NewRecorder()
 	c, _ := gin.CreateTestContext(recoder)
 	c.Request, _ = http.NewRequest(http.MethodPost, "/stats", nil)
-	r.usecase.Mock.On("").
-		Return(true).
+	r.usecase.Mock.On("GetStats").
+		Return(domain.Stats{
+			CountMutantDna: 4,
+			CountHumanDna:  10,
+			Ratio:          0.4,
+		}).
 		Once()
+	r.adapter.GetStats(c)
+	r.Equal(http.StatusOK, recoder.Code)
+	r.Equal("{\"count_human_dna\":10,\"count_mutant_dna\":4,\"ratio\":0.4}", recoder.Body.String())
 }
 
 func (r *RestAdapterSuite) TestRestAdapter_MutantVerifierMutant() {
