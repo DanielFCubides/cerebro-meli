@@ -1,0 +1,9 @@
+coverage:
+  range: 30..100
+  round: down
+  precision: 2
+# the followings files are going from the code coverage as they are autogenarated or are added to handle server
+# configuration but are not part main part of our codebase
+ignore:
+  - "*/mocks/*"
+  - "*/infrastructure/*"
