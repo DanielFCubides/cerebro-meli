@@ -85,6 +85,16 @@ The project is divided in 5 folders:
 - adapters: there files handle how the systems get and send information to the outside world, we only have a rest implementation for now, and the logic of how the request is processed and how the response is build do not affect the core business logic.
 
 
+### TODOs
+
+1. Review bug with big entries.
+2. Add some tool for logs and monitoring.
+3. Add swagger documentation.
+4. Kubernetes file deployment.
+5. Add some diagrams to the documentations.
+6. Add problem statement to repository.
+
+
 ## Authors
 
 - **Daniel Fernando Cubides** - [DanielFCubides](https://github.com/DanielFCubides)
